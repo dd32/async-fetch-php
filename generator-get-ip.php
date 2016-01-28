@@ -112,7 +112,7 @@ function gen_get_ip( $domain ) {
 		}
 
 		if ( $data_length > $i ) {
-			for ( $answer = 1; $answer <= $ANCOUNT; $answer++ ) {
+			for ( $answer_i = 1; $answer_i <= $ANCOUNT; $answer_i++ ) {
 
 				list(, $NAME, $TYPE, $CLASS) = unpack( 'n3', substr( $data, $i, 6 ) );
 				$i += 6;
