@@ -132,7 +132,7 @@ function gen_get_ip( $domain ) {
 					$_RDATA = substr( $data, $i, $RDLENGTH );
 					$_i = 0;
 					$RDATA = '';
-					while( "\0" != substr( $_RDATA, $_i, 1 ) ) {
+					while( "\0" != substr( $_RDATA, $_i, 1 ) && $_i < $RDLENGTH ) {
 						$field_length = ord( substr( $_RDATA, $_i, 1 ) );
 						$RDATA .= substr( $_RDATA, $_i+1, $field_length ) . '.';
 						$_i += $field_length + 1;
