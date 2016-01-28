@@ -52,7 +52,7 @@ function gen_get_ip( $domain ) {
 
 	$data = '';
 	$ip = false;
-	while ( ! $ip && ! $socket->error() && ! $socket->eof() ) {
+	while ( ! $ip && $socket && ! $socket->error() && ! $socket->eof() ) {
 
 		if ( ( time() - $started_at ) > $timeout ) {
 			//echo "Giving up $domain";
