@@ -29,18 +29,18 @@ function gen_get_ip( $domain ) {
 	do {
 
 		if ( ( time() - $started_at ) > $timeout ) {
-			//echo "Giving up $url";
+			//echo "Giving up $domain";
 			unset( $socket );
 			yield 'error' => [$domain, 'Giving Up' ];
 		}
 
 		if ( $socket->error() ) {
-			//echo "Error on $url\n";
+			//echo "Error on $domain\n";
 			yield 'error' => [$domain, 'DNS Hung up on us' ];
 		}
 
 		if ( ! $socket->ready_for_write() ) {
-			//echo "[$url] waiting for socket connect\n";
+			//echo "[$domain] waiting for socket connect\n";
 			yield 'notdone' => [ $domain, 'waiting for socket connect' ];
 			continue;
 		}
@@ -55,12 +55,12 @@ function gen_get_ip( $domain ) {
 	while ( ! $ip && ! $socket->error() && ! $socket->eof() ) {
 
 		if ( ( time() - $started_at ) > $timeout ) {
-			//echo "Giving up $url";
+			//echo "Giving up $domain";
 			yield 'error' => [ $domain, 'Giving Up' ];
 		}
 
 		if ( ! $socket->ready_for_read() ) {
-			//echo "[$url] waiting for data\n";
+			//echo "[$domain] waiting for data\n";
 			yield 'notdone' => [ $domain, 'waiting for data' ];
 			continue;
 		}
@@ -94,6 +94,7 @@ function gen_get_ip( $domain ) {
 			}
 			$i = 12;
 		}
+
 		if ( $data_length > $i ) {
 			$answer = '';
 			while( "\0" != substr( $data, $i, 1 ) ) {
@@ -113,16 +114,15 @@ function gen_get_ip( $domain ) {
 
 		if ( $data_length > $i ) {
 			for ( $answer_i = 1; $answer_i <= $ANCOUNT; $answer_i++ ) {
-
 				list(, $NAME, $TYPE, $CLASS) = unpack( 'n3', substr( $data, $i, 6 ) );
 				$i += 6;
-	
+
 				list(, $TTL ) = unpack( 'N', substr( $data, $i, 4 ) );
 				$i += 4;
 
 				list(, $RDLENGTH ) = unpack( 'n', substr( $data, $i, 2 ) );
 				$i += 2;
-	
+
 				// IPv4 is always $RDLENGTH = 4, others 2
 				if ( 1 == $TYPE && 4 == $RDLENGTH ) {			
 					list(, $RDATA ) = unpack( 'N', substr( $data, $i, $RDLENGTH ) );
