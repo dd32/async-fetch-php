@@ -18,7 +18,7 @@ class D_AsyncSocket {
 		if ( $this->error ) {
 			return $this->error;
 		}
-		if ( $this->connected && ! $this->socket ) {
+		if ( ! $this->socket ) {
 			return true;
 		}
 	}
